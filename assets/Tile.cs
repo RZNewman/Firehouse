@@ -86,4 +86,8 @@ public class Tile : MonoBehaviour {
         }
 
     }
+    void OnDestroy()
+    {
+        Destroy(thing);
+    }
 }

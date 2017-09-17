@@ -58,6 +58,7 @@ public class Room : MonoBehaviour {
     {
         GameObject start = tileAtLoc(entry);
         p.GetComponent<Player>().tile = start;
+        p.transform.position = p.GetComponent<Player>().tile.transform.position;
     }
     public void genDoors()
     {
@@ -68,9 +69,9 @@ public class Room : MonoBehaviour {
             while (!d)
             {
                 House.direction dir = randomDir();
-                print(dir);
+
                 Vector3 loc = DoorWall(dir);
-                print(loc);
+                
                 GameObject t = tileAtLoc(loc);
 
                 if (!t.GetComponent<Tile>().thing)
@@ -113,7 +114,7 @@ public class Room : MonoBehaviour {
             }
         }
     }
-    Vector2 DoorWall(House.direction d)
+    public Vector2 DoorWall(House.direction d)
     {
         int x, y;
         if (d == House.direction.up || d == House.direction.down)

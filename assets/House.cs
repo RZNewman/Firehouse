@@ -8,9 +8,10 @@ public class House : MonoBehaviour {
     Room r;
     GameObject p;
     public GameObject playerPre;
+    public GameObject roomPre;
     public enum direction
     {
-        up, down, left, right
+        up, down, left, right, none
     }
 	// Use this for initialization
 	void Start () {
@@ -22,6 +23,16 @@ public class House : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        direction leave = direction.none;
+        GameObject tileOn = p.GetComponent<Player>().tile.GetComponent<Tile>().thing;
+        if (tileOn && tileOn.GetComponent<Door>())
+        {
+            Door door = tileOn.GetComponent<Door>();
+            //print(door.dir);
+            leave = door.dir;
+        }
+
+
         if (Input.GetKeyDown(KeyCode.W))
         {
             GameObject t =relativeTile(new Vector2(0, 1));
@@ -29,6 +40,10 @@ public class House : MonoBehaviour {
             {
                 playerMove(direction.up);
                 r.tick();
+            }
+            else if (leave == direction.up)
+            {
+                nextRoom(leave);
             }
             
         }
@@ -40,6 +55,10 @@ public class House : MonoBehaviour {
                 playerMove(direction.left);
                 r.tick();
             }
+            else if (leave == direction.left)
+            {
+                nextRoom(leave);
+            }
 
         }
         if (Input.GetKeyDown(KeyCode.S))
@@ -49,6 +68,10 @@ public class House : MonoBehaviour {
             {
                 playerMove(direction.down);
                 r.tick();
+            }
+            else if (leave == direction.down)
+            {
+                nextRoom(leave);
             }
 
         }
@@ -60,6 +83,10 @@ public class House : MonoBehaviour {
                 playerMove(direction.right);
 				p.GetComponent<Player>().tick ();
                 r.tick();
+            }
+            else if (leave == direction.right)
+            {
+                nextRoom(leave);
             }
 
         }
@@ -86,6 +113,39 @@ public class House : MonoBehaviour {
 
         }
 
+    }
+    void nextRoom(direction d)
+    {
+        
+        GameObject next = Instantiate(roomPre);
+        r = next.GetComponent<Room>();
+        Vector2 v=r.DoorWall(opp(d));
+        r.entry = v;
+        r.Generate(p);
+        Destroy(current);
+        current = next;
+        transform.position = current.transform.position + new Vector3(r.width / 2f, r.height / 2f, -20);
+    }
+    direction opp(direction d)
+    {
+        switch (d)
+        {
+            case direction.up:
+                return direction.down;
+                
+            case direction.down:
+                return direction.up;
+                
+            case direction.left:
+                return direction.right;
+                
+            case direction.right:
+                return direction.left;
+
+            default:
+                throw new MissingReferenceException();
+                
+        }
     }
     void playerMove(direction d)
     {
