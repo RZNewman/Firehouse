@@ -2,19 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Thing: MonoBehaviour {
+public class Couch : Thing {
 
-    public GameObject tile;
 	// Use this for initialization
 	void Start () {
+		this.isPassable = false;
+		isFlamable = true;
 		
 	}
-    public abstract void tick();
 	
 	// Update is called once per frame
 	void Update () {
 		
 	}
-    public bool isPassable;
-	public bool isFlamable; 
+
 }
