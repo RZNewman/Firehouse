@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class House : MonoBehaviour {
 
-    public Room current;
+    public GameObject current;
+    Room r;
     GameObject p;
     public GameObject playerPre;
     public enum direction
@@ -14,23 +15,77 @@ public class House : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         p= Instantiate(playerPre);
-        current.GetComponent<Room>().Generate(p);
+        r = current.GetComponent<Room>();
+        r.Generate(p);
+        transform.position = current.transform.position + new Vector3(r.width / 2f, r.height/ 2f, -14);
 	}
 	
 	// Update is called once per frame
 	void Update () {
         if (Input.GetKeyDown(KeyCode.W))
         {
-            playerMove(direction.up);
+            GameObject t =relativeTile(new Vector2(0, 1));
+            if(t&& t.GetComponent<Tile>().isPassable)
+            {
+                playerMove(direction.up);
+                r.tick();
+            }
+            
         }
-	}
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            GameObject t = relativeTile(new Vector2(-1,0));
+            if (t && t.GetComponent<Tile>().isPassable)
+            {
+                playerMove(direction.left);
+                r.tick();
+            }
+
+        }
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            GameObject t = relativeTile(new Vector2(0, -1));
+            if (t && t.GetComponent<Tile>().isPassable)
+            {
+                playerMove(direction.down);
+                r.tick();
+            }
+
+        }
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            GameObject t = relativeTile(new Vector2(1,0));
+            if (t && t.GetComponent<Tile>().isPassable)
+            {
+                playerMove(direction.right);
+                r.tick();
+            }
+
+        }
+    }
     void playerMove(direction d)
     {
         GameObject t = p.GetComponent<Player>().tile;
+        GameObject tile;
         switch (d)
         {
             case direction.up:
-                GameObject tile = relativeTile(new Vector2(0, 1));
+                tile = relativeTile(new Vector2(0, 1));
+                p.GetComponent<Player>().tile = tile;
+                p.transform.position = tile.transform.position;
+                break;
+            case direction.down:
+                tile = relativeTile(new Vector2(0, -1));
+                p.GetComponent<Player>().tile = tile;
+                p.transform.position = tile.transform.position;
+                break;
+            case direction.left:
+                tile = relativeTile(new Vector2(-1, 0));
+                p.GetComponent<Player>().tile = tile;
+                p.transform.position = tile.transform.position;
+                break;
+            case direction.right:
+                tile = relativeTile(new Vector2(1, 0));
                 p.GetComponent<Player>().tile = tile;
                 p.transform.position = tile.transform.position;
                 break;
@@ -40,6 +95,15 @@ public class House : MonoBehaviour {
     GameObject relativeTile(Vector2 d)
     {
         Vector3 c = d;
-        return Physics2D.OverlapBox(p.transform.position + c, new Vector2(0.2f, 0.2f), 0).gameObject;
+        Collider2D col = Physics2D.OverlapBox(p.transform.position + c, new Vector2(0.2f, 0.2f), 0);
+        if (!col)
+        {
+            return null;
+        }
+        else
+        {
+            return col.gameObject;
+        }
+        
     }
 }

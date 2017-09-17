@@ -30,11 +30,11 @@ public class Tile : MonoBehaviour {
             return thing == null;
         }
     }
-    bool isPassable
+     public bool isPassable
     {
         get
         {
-			return thing && thing.GetComponent<Thing>().isPassable;
+			return !thing || thing.GetComponent<Thing>().isPassable;
         }
     }
 }
