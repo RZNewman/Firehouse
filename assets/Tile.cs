@@ -34,7 +34,7 @@ public class Tile : MonoBehaviour {
     {
         get
         {
-			return !thing || thing.GetComponent<Thing>().isPassable;
+			return (thing == null) || thing.GetComponent<Thing>().isPassable;
         }
     }
 }
