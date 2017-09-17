@@ -17,7 +17,7 @@ public class Room : MonoBehaviour {
                 //print(i + "--" + j);
                 GameObject t =Instantiate(tilePre, transform.position + new Vector3(i, j), transform.rotation, transform);
                 t.GetComponent<Tile>().room = gameObject;
-				if (Random.value > 0.9) {
+				if (this.maybe_gen_normal_dist(i,j,0.5f,1.0f,1.0f,(float)height)) {
 					t.GetComponent<Tile> ().fire = 1;
 				}
 				t.GetComponent<Tile> ().render_setup ();
@@ -27,6 +27,12 @@ public class Room : MonoBehaviour {
         placePlayer(player);
         genDoors();
     }
+	public bool maybe_gen_normal_dist(int x, int y, float max_prob, float weight, float max_weight, float range){
+		float dist = Mathf.Sqrt (x * x + y * y);
+		float prob = (1/(Mathf.Sqrt(2.0f*Mathf.PI*range))) * max_prob * (weight / max_weight);
+		//float prob = ((weight / max_weight) * Mathf.Sin (dist * range)) * max_prob;
+		return Random.value < prob;
+	}
     public void tick()
     {
 		foreach (Tile tile in this.GetComponentsInChildren<Tile>()) {
