@@ -17,7 +17,7 @@ public class House : MonoBehaviour {
         p= Instantiate(playerPre);
         r = current.GetComponent<Room>();
         r.Generate(p);
-        transform.position = current.transform.position + new Vector3(r.width / 2f, r.height/ 2f, -14);
+        transform.position = current.transform.position + new Vector3(r.width / 2f, r.height/ 2f, -20);
 	}
 	
 	// Update is called once per frame
