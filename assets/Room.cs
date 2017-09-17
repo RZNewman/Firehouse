@@ -17,6 +17,10 @@ public class Room : MonoBehaviour {
                 //print(i + "--" + j);
                 GameObject t =Instantiate(tilePre, transform.position + new Vector3(i, j), transform.rotation, transform);
                 t.GetComponent<Tile>().room = gameObject;
+				if (Random.value > 0.9) {
+					t.GetComponent<Tile> ().fire = 1;
+				}
+				t.GetComponent<Tile> ().render_setup ();
                 
             }
         }
@@ -24,7 +28,12 @@ public class Room : MonoBehaviour {
 	}
     public void tick()
     {
-        GetComponentInChildren<Tile>().tick();
+		foreach (Tile tile in this.GetComponentsInChildren<Tile>()) {
+			tile.tick ();
+		}
+		foreach (Tile tile in this.GetComponentsInChildren<Tile>()) {
+			tile.render_setup ();
+		}
     }
 	// Update is called once per frame
 	void Update () {
