@@ -58,6 +58,7 @@ public class House : MonoBehaviour {
             if (t && t.GetComponent<Tile>().isPassable)
             {
                 playerMove(direction.right);
+				p.GetComponent<Player>().tick ();
                 r.tick();
             }
 
