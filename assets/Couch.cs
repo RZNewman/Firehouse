@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Couch : Thing {
-	public bool isPassable = false;
-	public bool isFlamable = true;
+
 
 	// Use this for initialization
 	void Start () {
-		
+		this.isPassable = false;
+		this.isFlamable = true;
 	}
 	
 	// Update is called once per frame
