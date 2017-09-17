@@ -9,6 +9,7 @@ public class Tile : MonoBehaviour {
 
 	private const int FIRE_MAX = 5;
 	public int fire = 0;
+    bool incFire;
 
 	public void render_setup() {
 		GameObject f = transform.GetChild (0).gameObject;
@@ -32,12 +33,26 @@ public class Tile : MonoBehaviour {
 					if (o != null) {
 						Tile t = o.GetComponent<Tile> ();
 						if (t != null && t.fire == 0 && (t.isFree || t.thing.GetComponent<Thing> ().isFlamable)) {
-							t.fire = 1;
+                            t.incFire = true;
 						}
 					}
 				}
 			}
 		}
+    }
+    public void regFire()
+    {
+        if (fire == -1)
+        {
+            incFire = false;
+            this.fire = 0;
+        }
+        if (incFire)
+        {
+            this.fire = 1;
+            incFire = false;
+        }
+
     }
 	// Update is called once per frame
 	void Update () {

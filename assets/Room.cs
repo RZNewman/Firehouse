@@ -32,7 +32,11 @@ public class Room : MonoBehaviour {
 		foreach (Tile tile in this.GetComponentsInChildren<Tile>()) {
 			tile.tick ();
 		}
-		foreach (Tile tile in this.GetComponentsInChildren<Tile>()) {
+        foreach (Tile tile in this.GetComponentsInChildren<Tile>())
+        {
+            tile.regFire();
+        }
+        foreach (Tile tile in this.GetComponentsInChildren<Tile>()) {
 			tile.render_setup ();
 		}
     }

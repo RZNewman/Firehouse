@@ -76,7 +76,7 @@ public class House : MonoBehaviour {
                         GameObject t = relativeTile(new Vector2(i, j));
                         if (t)
                         {
-                            t.GetComponent<Tile>().fire = 0;
+                            t.GetComponent<Tile>().fire = -1;
                         }
                     }
                 }
