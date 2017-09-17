@@ -16,4 +16,5 @@ public class Couch : Thing {
 		
 	}
 
+	public override void tick() {}
 }
