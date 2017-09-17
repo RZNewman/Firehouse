@@ -8,6 +8,7 @@ public class Room : MonoBehaviour {
     public GameObject tilePre;
     public GameObject doorPre;
     public Vector2 entry;
+	public List<Vector2> doors = new List<Vector2> ();
 	// Use this for initialization
 	public void Generate (GameObject player) {
 		for(int i =0; i<width; i++)
@@ -17,22 +18,18 @@ public class Room : MonoBehaviour {
                 //print(i + "--" + j);
                 GameObject t =Instantiate(tilePre, transform.position + new Vector3(i, j), transform.rotation, transform);
                 t.GetComponent<Tile>().room = gameObject;
-				if (this.maybe_gen_normal_dist(i,j,0.5f,1.0f,1.0f,(float)height)) {
-					t.GetComponent<Tile> ().fire = 1;
-				}
-				t.GetComponent<Tile> ().render_setup ();
+
                 
             }
         }
         placePlayer(player);
         genDoors();
+		genFire ();
+		foreach (Tile tile in this.GetComponentsInChildren<Tile>()) {
+			tile.render_setup ();
+		}
     }
-	public bool maybe_gen_normal_dist(int x, int y, float max_prob, float weight, float max_weight, float range){
-		float dist = Mathf.Sqrt (x * x + y * y);
-		float prob = (1/(Mathf.Sqrt(2.0f*Mathf.PI*range))) * max_prob * (weight / max_weight);
-		//float prob = ((weight / max_weight) * Mathf.Sin (dist * range)) * max_prob;
-		return Random.value < prob;
-	}
+
     public void tick()
     {
 		foreach (Tile tile in this.GetComponentsInChildren<Tile>()) {
@@ -79,6 +76,7 @@ public class Room : MonoBehaviour {
                 if (!t.GetComponent<Tile>().thing)
                 {
                     d = Instantiate(doorPre, t.transform.position, transform.rotation);
+					this.doors.Add (new Vector2 (loc.x,loc.y));
                     d.GetComponent<Thing>().tile = t;
                     t.GetComponent<Tile>().thing = d;
                     d.GetComponent<Door>().dir = dir;
@@ -168,4 +166,26 @@ public class Room : MonoBehaviour {
             return House.direction.right;
         }
     }
+	public void genFire(){
+		for (int i = 0; i < width; i++) {
+			for (int j = 0; j < height; j++) {
+				Vector2 loc = new Vector2 (i, j);
+				Tile t = tileAtLoc(loc).GetComponent<Tile>();
+				Vector2 mx = new Vector2 (-10000, -10000);
+				foreach (Vector2 v in doors) {
+					if ((v - loc).magnitude < (mx - loc).magnitude) {
+						mx = v;
+					}
+				}
+				if (this.maybe_gen_normal_dist ((mx - loc), 1f, 2)) {
+					t.GetComponent<Tile> ().fire = 1;
+				}
+			}
+		}
+	}
+	public bool maybe_gen_normal_dist(Vector2 pos, float max_prob, float range){
+		float dist = pos.magnitude ;
+		float prob = Mathf.Abs((1/(Mathf.Sqrt(2.0f*Mathf.PI*(Mathf.Pow(range,2.0f))))) * (Mathf.Exp(-(Mathf.Pow(dist,2.0f)/(2*(Mathf.Pow(range,2.0f	)))))) * max_prob);
+		return Random.value < prob;
+	}
 }
