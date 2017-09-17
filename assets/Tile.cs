@@ -7,7 +7,8 @@ public class Tile : MonoBehaviour {
     public GameObject room;
     public GameObject thing = null;
 
-    public float fire;
+	private const int FIRE_MAX = 5;
+    public int fire = 0;
 	// Use this for initialization
 	void Start () {
 		
@@ -18,12 +19,30 @@ public class Tile : MonoBehaviour {
         {
             thing.GetComponent<Thing>().tick();
         }
+		if (this.fire > 0 && this.fire < FIRE_MAX) {
+			this.fire += 1;
+		} else if (this.fire == FIRE_MAX) {
+			for (int x = 0; x < 2; x += 1) {
+				for (int y = 0; y < 2; y += 1) {
+					GameObject o = this.relativeTile (new Vector2 (x, y));
+					Tile t = o.GetComponent<Tile> ();
+					if (t != null && t.fire == 0 && (t.isFree || t.thing.GetComponent<Thing>().isFlamable)) {
+						t.fire = 1;
+					}
+				}
+			}
+		}
+		if (fire != 0) {
+			GameObject f = transform.GetChild (0);
+			f.SetActive (true);
+			f.transform.localScale = Vector3.one * ((float)this.fire / (float) this.FIRE_MAX);
+		}
     }
 	// Update is called once per frame
 	void Update () {
 		
 	}
-    bool isFree
+    public bool isFree
     {
         get
         {
@@ -37,27 +56,8 @@ public class Tile : MonoBehaviour {
 			return (thing == null) || thing.GetComponent<Thing>().isPassable;
         }
     }
-    GameObject relativeTile(House.direction d)
+    GameObject relativeTile(Vector2 dir)
     {
-        Vector2 dir;
-        switch (d)
-        {
-            case House.direction.up:
-                dir = new Vector2(0, 1);
-                break;
-            case House.direction.down:
-                dir = new Vector2(0, -1);
-                break;
-            case House.direction.left:
-                dir = new Vector2(-1, 0);
-                break;
-            case House.direction.right:
-                dir = new Vector2(1, 0);
-                break;
-            default:
-                dir = Vector2.zero;
-                break;
-        }
         Vector3 c = dir;
         Collider2D col = Physics2D.OverlapBox(transform.position + c, new Vector2(0.2f, 0.2f), 0);
         if (!col)
