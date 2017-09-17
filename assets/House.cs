@@ -63,6 +63,29 @@ public class House : MonoBehaviour {
             }
 
         }
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            
+            if (p.GetComponent<Player>().water>0)
+            {
+                p.GetComponent<Player>().water--;
+                for(int i = -1; i < 2; i++)
+                {
+                    for(int j=-1;j<2;j++)
+                    {
+                        GameObject t = relativeTile(new Vector2(i, j));
+                        if (t)
+                        {
+                            t.GetComponent<Tile>().fire = 0;
+                        }
+                    }
+                }
+                p.GetComponent<Player>().tick();
+                r.tick();
+            }
+
+        }
+
     }
     void playerMove(direction d)
     {

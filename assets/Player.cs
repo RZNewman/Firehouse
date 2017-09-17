@@ -5,6 +5,7 @@ using UnityEngine;
 public class Player : MonoBehaviour {
     public GameObject tile;
 	public int health = 10;
+    public int water = 6;
 	// Use this for initialization
 	void Start () {
 		
